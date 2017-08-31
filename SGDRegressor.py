@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.linear_model import SGDRegressor as SGD
 
 np.seterr(all='warn')
 
@@ -15,15 +16,17 @@ class SGDRegressor:
 		self.learning_rate = learning_rate
 		self.max_iter = max_iter
 		self.batch_size = batch_size
+		self.model = SGD(penalty=None, learning_rate='optimal', max_iter = 1)
 
 	def fit(self, X, y):
-		self._perform_gradient_descendent(X, y)
+		#self._perform_gradient_descendent(X, y)
+		self._perform_gradient_descendent_with_sklearn(X, y)
 
 	def getErrorHistory(self):
 		return self.history
 
 	def predict(self, X):
-		return X.dot(self.theta)
+		return self.model.predict(X)
 
 	def _learning_schedule(self, time):
 		return self.t0/ (time + self.t1)
@@ -38,8 +41,25 @@ class SGDRegressor:
 
 			yield batch_x, batch_y
 
+	def _perform_gradient_descendent_with_sklearn(self, X, Y):
+		print("shape of Y", Y.shape)
+		size = X.shape[1]
+		#self.theta = np.random.rand(X.shape[1], 1)
+		self.history = np.arange(size)
 
+		#max_iter is just to avoid the warning message but it will not be used.
 
+		for epoch in range(self.max_iter):
+			
+			print("epocha", epoch)
+			batchs = self._get_batches(X, Y, self.batch_size)
+
+			for batch_x, batch_y in batchs:
+				self.model.partial_fit(batch_x, batch_y)
+
+			print("score", self.model.score(X, Y))
+
+	
 	def _perform_gradient_descendent(self, X, Y):
 		print("shape of Y", Y.shape)
 		size = X.shape[1]
@@ -54,9 +74,14 @@ class SGDRegressor:
 			np.random.shuffle(indices)
 			batchs = self._get_batches(X[indices,:], Y[indices], self.batch_size)
 
+
 			for batch_x, batch_y in batchs:
 
 				batch_y = batch_y.reshape(self.batch_size, 1)
 				error = np.subtract(batch_x.dot(self.theta), batch_y)
+
+				print("Error", error)
+
 				gradients = (2/self.batch_size)*batch_x.T.dot(error)
 				self.theta = self.theta - self.learning_rate * gradients
+
