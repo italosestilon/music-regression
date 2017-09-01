@@ -49,6 +49,19 @@ print("Error : %.2f" %mean_squared_error(Y_test, y_pred))
 sgd = SGDRegressor(learning_rate=0.001, max_iter=50, batch_size=50)
 sgd.fit(X_scaled, Y_training)
 
+train_errors = sgd.getTrain_errors()
+
+print(train_errors)
+
+plt.plot(range(0, len(train_errors)), np.log10(train_errors))
+plt.xlabel('Epochas')
+plt.ylabel('Cost')
+plt.title('Cost vs Iterations')
+
+plt.tight_layout()
+plt.show()
+fig = plt.figure()
+fig.savefig("costvsiterations.png")
 
 history = sgd.getErrorHistory()
 
