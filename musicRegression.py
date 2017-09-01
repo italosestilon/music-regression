@@ -14,11 +14,11 @@ from SGDRegressor import SGDRegressor
 from SGDRegressor import SGDRegressor
 
 def load_data(path):
-	#return np.loadtxt(path, delimiter=',')
-	return pd.read_csv(path, header=None)
+    #return np.loadtxt(path, delimiter=',')
+    return pd.read_csv(path, header=None)
 
 
-data = load_data('year-prediction-msd-train.txt')
+data = load_data('/home/rafael/Dados/Comp/mestrado/ml/trabalho1/year-prediction-msd-train.txt')
 
 #data=pd.read_csv('year-prediction-msd-train.txt',header=None)
 
@@ -46,12 +46,18 @@ print("Error : %.2f" %mean_squared_error(Y_test, y_pred))
 
 #Linear regression with stochastic gradient descent
 
-sgd = SGDRegressor(learning_rate=0.001, max_iter=100, batch_size=50)
-sgd.fit(X_scaled, Y_training)
+sgd = SGDRegressor(learning_rate=0.001, max_iter=5, batch_size=5)
+sgd.fit(X_scaled, Y_training, Y_test)
 
 history = sgd.getErrorHistory()
+plt.plot(range(1, len(sgd.getTrain_errors)), np.log10(sgd.getTrain_errors))
+plt.xlabel('Epochs')
+plt.ylabel('Cost')
+plt.title('Cost vs Iterations')
 
-print(history)
+plt.tight_layout()
+plt.show()
+# print(history)
 
 sgd_y_pred = sgd.predict(X_test_scaled)
 
