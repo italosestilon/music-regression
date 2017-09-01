@@ -16,7 +16,7 @@ class SGDRegressor:
 		self.learning_rate = learning_rate
 		self.max_iter = max_iter
 		self.batch_size = batch_size
-		self.model = SGD(penalty=None, learning_rate='optimal', max_iter = 1)
+		self.model = SGD(learning_rate='optimal', max_iter = 1, eta0=learning_rate, penalty="l2")
 
 	def fit(self, X, y):
 		#self._perform_gradient_descendent(X, y)
@@ -33,9 +33,11 @@ class SGDRegressor:
 
 	def _get_batches(self, X, Y, batch_size):
 		
-		size = X.shape[0] - batch_size + 1
+		limit = X.shape[0] - batch_size + 1
+
+		size = int(X.shape[0]/batch_size)
 		
-		starting = np.random.randint(size, size=size)
+		starting = np.random.randint(limit, size=size)
 		for i in starting:
 			batch_x = X[i:i+batch_size,:]
 			batch_y = Y[i:i+batch_size]
@@ -57,6 +59,10 @@ class SGDRegressor:
 		for epoch in range(self.max_iter):
 
 			#print("epocha", epoch)
+
+			indices = np.arange(X.shape[0])
+			np.random.shuffle(indices)
+
 			batchs = self._get_batches(X, Y, self.batch_size)
 
 			for batch_x, batch_y in batchs:
