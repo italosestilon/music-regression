@@ -32,6 +32,7 @@ class SGDRegressor:
 		return self.t0/ (time + self.t1)
 
 	def _get_batches(self, X, Y, batch_size):
+		
 		size = X.shape[0] - batch_size + 1
 		
 		starting = np.random.randint(size, size=size)
@@ -41,8 +42,12 @@ class SGDRegressor:
 
 			yield batch_x, batch_y
 
+	def score(self, X, Y):
+		return self.model.score(X, Y)
+
+
 	def _perform_gradient_descendent_with_sklearn(self, X, Y):
-		print("shape of Y", Y.shape)
+		#print("shape of Y", Y.shape)
 		size = X.shape[1]
 		#self.theta = np.random.rand(X.shape[1], 1)
 		self.history = np.arange(size)
@@ -50,14 +55,14 @@ class SGDRegressor:
 		#max_iter is just to avoid the warning message but it will not be used.
 
 		for epoch in range(self.max_iter):
-			
-			print("epocha", epoch)
+
+			#print("epocha", epoch)
 			batchs = self._get_batches(X, Y, self.batch_size)
 
 			for batch_x, batch_y in batchs:
 				self.model.partial_fit(batch_x, batch_y)
 
-			print("score", self.model.score(X, Y))
+			#print("score", self.model.score(X, Y))
 
 	
 	def _perform_gradient_descendent(self, X, Y):
