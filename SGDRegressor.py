@@ -56,7 +56,6 @@ class SGDRegressor:
 			indices = np.arange(X.shape[0])
 			np.random.shuffle(indices)
 
-			print("epocha", epoch)
 			batchs = self._get_batches(X[indices,:], Y[indices], self.batch_size)
 
 			for batch_x, batch_y in batchs:
