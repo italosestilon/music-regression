@@ -14,8 +14,8 @@ from SGDRegressor import SGDRegressor
 from SGDRegressor import SGDRegressor
 
 def load_data(path):
-	#return np.loadtxt(path, delimiter=',')
-	return pd.read_csv(path, header=None)
+    #return np.loadtxt(path, delimiter=',')
+    return pd.read_csv(path, header=None)
 
 
 data = load_data('year-prediction-msd-train.txt')
@@ -46,12 +46,11 @@ print("Error : %.2f" %mean_squared_error(Y_test, y_pred))
 
 #Linear regression with stochastic gradient descent
 
-sgd = SGDRegressor(learning_rate=0.001, max_iter=400, batch_size=50)
+sgd = SGDRegressor(learning_rate=0.001, max_iter=50, batch_size=50)
 sgd.fit(X_scaled, Y_training)
 
-history = sgd.getErrorHistory()
 
-print(history)
+history = sgd.getErrorHistory()
 
 sgd_y_pred = sgd.predict(X_test_scaled)
 
